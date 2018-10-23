@@ -87,9 +87,8 @@ jobs:
       tag: "6"
     steps:
       - checkout
-      - node-orb/install_package_manager
       - node-orb/install_package_manager:
-          npm: true
+          yarn: true
       # - node-orb/with_cache:
       #     steps:
       #       - run:
