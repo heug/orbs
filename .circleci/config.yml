@@ -1,0 +1,30 @@
+version: 2.1
+
+orbs:
+  node-orb:
+    executors:
+      node:
+        parameters:
+          tag:
+            type: string
+            default: latest
+        docker:
+          - image: circleci/node:<< parameters.tag >>
+      mongo:
+        parameters:
+          tag:
+            type: string
+            default: latest
+        docker:
+          - image: circleci/node:<< parameters.tag >>
+    # jobs:
+    #   helloworld:
+    #     executor: node
+    #     steps:
+    #       - echo 'hello world'
+       
+jobs:
+  helloworld:
+    executor: node
+      jobs:
+        - echo "hello world"
