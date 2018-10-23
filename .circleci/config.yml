@@ -50,10 +50,10 @@ orbs:
             type: steps
           dir:
             type: string
-            default: ~/node_modules/
+            default: "~/node_modules/"
           deps-metadata:
             type: string
-            default: package.json
+            default: "package.json"
         steps:
           - restore_cache:
               key: node-deps-{{ checksum << parameters.deps-metadata >> }}
