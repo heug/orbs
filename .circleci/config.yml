@@ -43,10 +43,15 @@ orbs:
           - when:
               condition: << parameters.yarn >>
               steps:
+                - run:
+                    name: Set Yarn Version env var
+                    command: |
+                      echo 'export YARN_VERSION=<< parameters.yarn_version >>' >> $BASH_ENV
+                      source $BASH_ENV
                 - run: |
-                    if [ -n << parameters.yarn_version >> ];
+                    if [ -n $YARN_VERSION ];
                       then
-                        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version << parameters.yarn_version >>
+                        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
                       else
                         curl -o- -L https://yarnpkg.com/install.sh | bash -s --
                     fi
@@ -94,7 +99,7 @@ jobs:
       - checkout
       - node-orb/install_package_manager:
           yarn: true
-          yarn_version: "1.10.1"
+          # yarn_version: "1.10.1"
       # - node-orb/with_cache:
       #     steps:
       #       - run:
