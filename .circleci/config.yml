@@ -18,10 +18,33 @@ orbs:
     commands:
       # install_npm:
       #   description: |
+      # save_cache:
+      #   description: |
+      #     Save dependencies cache.
 
+      #     This command will save a cache of node dependencies. It's recommended that
+      #     this command be run before 
+
+      #   parameters:
+      #     deps-metadata:
+      #       type: string
+      #       default: package.json
+      #   steps:
+        
       with_cache:
         description: |
-          Run a set of steps with caching
+          Run a set of steps with node dependencies cached.
+
+          This command will first restore a cache of node dependencies, if one was
+          saved by a previous build. The provided `steps` will then be executed, and
+          if successful, a fresh cache will be saved, if required.
+
+          The contents of the `~/node_modules` directory is cached, which will substantially
+          improve build times for projects with many dependencies. This directory can be changed
+          with the `dir` parameter.
+
+          The cache-key is generated from `package.json`. This file can be changed with the
+          `deps-metadata` parameter.
         parameters:
           steps:
             type: steps
@@ -30,7 +53,7 @@ orbs:
             default: ~/node_modules/
           deps-metadata:
             type: string
-            default: package.json 
+            default: package.json
         steps:
           - restore_cache:
               key: node-deps-{{ checksum << parameters.deps-metadata >> }}
@@ -50,3 +73,9 @@ jobs:
       tag: "6"
     steps:
       - checkout
+      - npm init
+      - npm i express
+      - save_cache
+          key: node-deps-{{ checksum package.json }}
+          paths:
+            - ~/node_modules
