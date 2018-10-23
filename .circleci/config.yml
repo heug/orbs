@@ -36,10 +36,14 @@ orbs:
             type: string
             default: "stable"
         steps:
-          - run: << parameters.npm >> && \
-              npm i -g npm@"<< parameters.npm_version >>"
-          - run: << parameters.yarn >> && \
-              curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version << parameters.yarn_version >>
+          - when:
+              condition: << parameters.npm >>
+              steps:
+                - run: npm i -g npm@"<< parameters.npm_version >>"
+          - when:
+              condition: << parameters.yarn >>
+              steps:
+                - run: curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version << parameters.yarn_version >>
         
       with_cache:
         description: |
