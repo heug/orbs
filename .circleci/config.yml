@@ -73,9 +73,8 @@ jobs:
       tag: "6"
     steps:
       - checkout
-      - run: npm init
-      - run: npm i express
-      - save_cache:
-          key: node-deps-{{ checksum "package.json" }}
-          paths:
-            - ~/node_modules
+      - node-orb/with_cache:
+          steps:
+            - run:
+                name: Install deps
+                command: npm i
