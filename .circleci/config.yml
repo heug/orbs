@@ -43,14 +43,16 @@ orbs:
           - when:
               condition: << parameters.yarn >>
               steps:
-                - run:
-                    name: Set Yarn Version env var
-                    command: |
-                      echo 'export YARN_VERSION=<< parameters.yarn_version >>' >> $BASH_ENV
-                      source $BASH_ENV
-                - run: echo $YARN_VERSION
-                - run: echo $BASH_ENV
+                # - run:
+                #     name: Set Yarn Version env var
+                #     command: |
+                #       echo 'export YARN_VERSION=<< parameters.yarn_version >>' >> $BASH_ENV
+                #       source $BASH_ENV
+                # - run: echo $YARN_VERSION
+                # - run: echo $BASH_ENV
                 - run: |
+                    echo 'export YARN_VERSION=<< parameters.yarn_version >>' >> $BASH_ENV
+                    source $BASH_ENV
                     if [ -n $YARN_VERSION ];
                       then
                         curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
