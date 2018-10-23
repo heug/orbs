@@ -76,6 +76,6 @@ jobs:
       - run: npm init
       - run: npm i express
       - save_cache:
-          keys: node-deps-{{ checksum "package.json" }}
+          key: node-deps-{{ checksum "package.json" }}
           paths:
             - ~/node_modules
