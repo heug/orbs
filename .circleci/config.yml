@@ -3,19 +3,21 @@ version: 2.1
 orbs:
   node-orb: heug/node@dev:0.0.2
 
-jobs:
-  build:
-    description: Let's give this a try
-    executor: 
-      name: node-orb/node
-      tag: "6"
-    steps:
-      - checkout
-      - node-orb/install_package_manager:
-          yarn: true
-          # yarn_version: "1.10.1"
-      # - node-orb/with_cache:
-      #     steps:
-      #       - run:
-      #           name: Install deps
-      #           command: npm i
+workflows:
+  build-test-deploy:
+    jobs:
+      build:
+        description: Let's give this a try
+        executor: 
+          name: node-orb/node
+          tag: "6"
+        steps:
+          - checkout
+          - node-orb/install_package_manager:
+              yarn: true
+              # yarn_version: "1.10.1"
+          # - node-orb/with_cache:
+          #     steps:
+          #       - run:
+          #           name: Install deps
+          #           command: npm i
