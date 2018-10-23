@@ -39,7 +39,7 @@ orbs:
           - when:
               condition: << parameters.npm >>
               steps:
-                - run: npm i -g npm@"<< parameters.npm_version >>"
+                - run: sudo npm i -g npm@"<< parameters.npm_version >>"
           - when:
               condition: << parameters.yarn >>
               steps:
