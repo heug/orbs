@@ -94,6 +94,7 @@ jobs:
       - checkout
       - node-orb/install_package_manager:
           yarn: true
+          yarn_version: "1.10.1"
       # - node-orb/with_cache:
       #     steps:
       #       - run:
