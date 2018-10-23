@@ -34,7 +34,7 @@ orbs:
             default: "latest"
           yarn_version:
             type: string
-            default: "stable"
+            default: ""
         steps:
           - when:
               condition: << parameters.npm >>
@@ -43,8 +43,13 @@ orbs:
           - when:
               condition: << parameters.yarn >>
               steps:
-                - run: curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version << parameters.yarn_version >>
-        
+                - run: |
+                    if [ -n << parameters.yarn_version >> ]; \
+                      then \
+                        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version << parameters.yarn_version >> \
+                      else \
+                        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- \
+                    fi
       with_cache:
         description: |
           Run a set of steps with node dependencies cached.
