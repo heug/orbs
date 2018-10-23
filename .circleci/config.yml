@@ -10,8 +10,9 @@ jobs:
       tag: "6"
     steps:
       - checkout
-      - node-orb/install_package_manager
-          # yarn: true
+      - node-orb/install_package_manager:
+          yarn: true
+          npm: true
 
 
 workflows:
