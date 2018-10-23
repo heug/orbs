@@ -26,5 +26,5 @@ orbs:
 jobs:
   helloworld:
     executor: node
-      jobs:
+      steps:
         - echo "hello world"
