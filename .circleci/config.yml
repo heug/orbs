@@ -7,24 +7,46 @@ orbs:
         parameters:
           tag:
             type: string
-            default: latest
+            default: "latest"
         docker:
           - image: circleci/node:<< parameters.tag >>
-      mongo:
-        parameters:
-          tag:
-            type: string
-            default: latest
-        docker:
-          - image: circleci/mongo:<< parameters.tag >>
     jobs:
       helloworld:
         executor: node
         steps:
-          - echo 'hello world'
-       
+          - run: echo "hello world"
+    commands:
+      # install_npm:
+      #   description: |
 
-workflows:
-  build-test-deploy:
-    jobs:
-      - node-orb/helloworld
+      with_cache:
+        description: |
+          Run a set of steps with caching
+        parameters:
+          steps:
+            type: steps
+          dir:
+            type: string
+            default: ~/node_modules/
+          deps-metadata:
+            type: string
+            default: package.json 
+        steps:
+          - restore_cache:
+              key: node-deps-{{ checksum << parameters.deps-metadata >> }}
+          - steps: << parameters.steps >>
+          - save_cache:
+              key: node-deps-{{ checksum << parameters.deps-metadata >> }}
+              paths:
+                - << parameters.dir >>
+
+# workflows:
+#   build-test-deploy:
+jobs:
+  build:
+    description: Let's give this a try
+    executor: 
+      name: node-orb/node
+      tag: "6"
+    steps:
+      - checkout
