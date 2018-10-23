@@ -1,0 +1,41 @@
+version: 2.1
+
+orbs:
+  node-orb:
+    executors:
+      node:
+        parameters:
+          tag:
+            type: string
+            default: latest
+        docker:
+          - image: circleci/node:<< parameters.tag >>
+    jobs:
+      helloworld:
+        executor: node
+        steps:
+          - run: echo "hello world"
+    commands:
+      # install_npm:
+      #   description: |
+
+      with_cache:
+        description: |
+          Run a set of steps with caching
+        parameters:
+          steps:
+            type: steps
+          dir:
+            type: string
+            default: ~/node_modules/
+          deps-metadata:
+            type: string
+            default: package.json 
+        steps:
+          - restore_cache:
+              key: node-deps-{{ checksum << parameters.deps-metadata >> }}
+          - steps: << parameters.steps >>
+          - save_cache:
+              key: node-deps-{{ checksum << parameters.deps-metadata >> }}
+              paths:
+                - << parameters.dir >>

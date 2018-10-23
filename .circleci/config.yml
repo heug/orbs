@@ -73,8 +73,8 @@ jobs:
       tag: "6"
     steps:
       - checkout
-      - npm init
-      - npm i express
+      - run: npm init
+      - run: npm i express
       - save_cache:
           keys: node-deps-{{ checksum "package.json" }}
           paths:
