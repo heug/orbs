@@ -7,35 +7,88 @@ orbs:
         parameters:
           tag:
             type: string
-            default: latest
+            default: "latest"
         docker:
           - image: circleci/node:<< parameters.tag >>
+    
     jobs:
       helloworld:
         executor: node
         steps:
           - run: echo "hello world"
+    
     commands:
-      # install_npm:
-      #   description: |
+      install_package_manager:
+        description: |
+          Install yarn or npm package manager.
 
+          This command installs npm and/or yarn given the `npm` or `yarn` parameter set to `true`,
+          and defaults to `latest` and `stable`, respectively, unless passed specific `npm_version`
+          or `yarn_version` parameters.
+        parameters:
+          npm:
+            type: boolean
+            default: false
+          yarn:
+            type: boolean
+            default: false
+          npm_version:
+            type: string
+            default: "latest"
+          yarn_version:
+            type: string
+            default: ""
+        steps:
+          - when:
+              condition: << parameters.npm >>
+              steps:
+                - run: sudo npm i -g npm@"<< parameters.npm_version >>"
+          - when:
+              condition: << parameters.yarn >>
+              steps:
+                - run:
+                    name: Set Yarn Version env var
+                    command: |
+                      echo 'export YARN_VERSION=<< parameters.yarn_version >>' >> $BASH_ENV
+                      source $BASH_ENV
+                - run: |
+                    if [ -n "$YARN_VERSION" ];
+                      then
+                        echo $YARN_VERSION
+                        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
+                      else
+                        curl -o- -L https://yarnpkg.com/install.sh | bash
+                    fi
       with_cache:
         description: |
-          Run a set of steps with caching
+          Run a set of steps with node dependencies cached.
+
+          This command will first restore a cache of node dependencies, if one was
+          saved by a previous build. The provided `steps` will then be executed, and
+          if successful, a fresh cache will be saved, if required.
+
+          The contents of the `~/node_modules` directory is cached, which will substantially
+          improve build times for projects with many dependencies. This directory can be changed
+          with the `dir` parameter.
+
+          The cache-key is generated from `package.json`. This file can be changed with the
+          `deps-metadata` parameter. 
         parameters:
           steps:
             type: steps
           dir:
             type: string
-            default: ~/node_modules/
+            default: "~/node_modules/"
           deps-metadata:
             type: string
-            default: package.json 
+            default: "package.json"
         steps:
           - restore_cache:
-              key: node-deps-{{ checksum << parameters.deps-metadata >> }}
+              key: node-deps-{{ checksum "<< parameters.deps-metadata >>" }}
           - steps: << parameters.steps >>
           - save_cache:
-              key: node-deps-{{ checksum << parameters.deps-metadata >> }}
+              key: node-deps-{{ checksum "<< parameters.deps-metadata >>" }}
               paths:
                 - << parameters.dir >>
+        # with_splitting:
+        #   description: |
