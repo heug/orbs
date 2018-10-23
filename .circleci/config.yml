@@ -48,12 +48,14 @@ orbs:
                     command: |
                       echo 'export YARN_VERSION=<< parameters.yarn_version >>' >> $BASH_ENV
                       source $BASH_ENV
+                - run: echo $YARN_VERSION
+                - run: echo $BASH_ENV
                 - run: |
                     if [ -n $YARN_VERSION ];
                       then
                         curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
                       else
-                        curl -o- -L https://yarnpkg.com/install.sh | bash -s --
+                        curl -o- -L https://yarnpkg.com/install.sh | bash
                     fi
       with_cache:
         description: |
